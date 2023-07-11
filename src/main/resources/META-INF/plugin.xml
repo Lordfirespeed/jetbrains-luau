@@ -8,6 +8,13 @@
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
+        <!-- Language -->
+        <fileType name="Luau"
+                  language="Luau"
+                  implementationClass="com.github.lordfirespeed.jetbrainsluau.lang.LuauFileType"
+                  extensions="luau"
+                  fieldName="INSTANCE"/>
+
         <!-- LSP -->
         <platform.lsp.serverSupportProvider implementation="com.github.lordfirespeed.jetbrainsluau.ide.lsp.LuauLspServerSupportProvider"/>
 
