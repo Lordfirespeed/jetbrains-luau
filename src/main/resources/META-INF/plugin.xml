@@ -3,13 +3,19 @@
     <id>com.github.lordfirespeed.jetbrainsluau</id>
     <name>Luau Language Support</name>
     <vendor>lordfirespeed</vendor>
+    <resource-bundle>messages.LuauBundle</resource-bundle>
 
     <depends>com.intellij.modules.platform</depends>
 
-    <resource-bundle>messages.LuauBundle</resource-bundle>
-
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.lordfirespeed.jetbrainsluau.ide.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
+        <!-- LSP -->
+        <platform.lsp.serverSupportProvider implementation="com.github.lordfirespeed.jetbrainsluau.ide.lsp.LuauLspServerSupportProvider"/>
+
+        <!-- UI -->
+        <notificationGroup id="Luau"
+                           displayType="BALLOON"
+                           bundle="messages.LuauBundle"
+                           key="notification.group.luau"/>
     </extensions>
 
     <applicationListeners>
