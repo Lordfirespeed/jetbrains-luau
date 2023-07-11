@@ -1,4 +1,4 @@
-package com.github.lordfirespeed.jetbrainsluau.listeners
+package com.github.lordfirespeed.jetbrainsluau.ide.listeners
 
 import com.intellij.openapi.application.ApplicationActivationListener
 import com.intellij.openapi.diagnostic.thisLogger
