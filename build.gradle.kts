@@ -27,7 +27,7 @@ val os = DefaultNativePlatform.getCurrentOperatingSystem()
 val luauLspArchive = if (os.isWindows) {
     "luau-lsp-win64.zip"
 } else if (os.isLinux) {
-    val architecture = DefaultNativePlatform.getCurrentArchitecture();
+    val architecture = DefaultNativePlatform.getCurrentArchitecture()
     if (architecture.isArm) {
         "luau-lsp-linux-arm64.zip"
     } else {
