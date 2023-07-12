@@ -1,5 +1,7 @@
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.changelog.markdownToHTML
+import de.undercouch.gradle.tasks.download.Download
+import org.gradle.nativeplatform.platform.internal.DefaultNativePlatform
 
 fun properties(key: String) = providers.gradleProperty(key)
 fun environment(key: String) = providers.environmentVariable(key)
@@ -12,10 +14,29 @@ plugins {
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
     alias(libs.plugins.qodana) // Gradle Qodana Plugin
     alias(libs.plugins.kover) // Gradle Kover Plugin
+    alias(libs.plugins.download) // Undercrouch download plugin
 }
 
 group = properties("pluginGroup").get()
 version = properties("pluginVersion").get()
+
+val luauLspProjectUrl = properties("luauLspProjectUrl").get()
+val luauLspVersion = properties("luauLspVersion").get()
+
+val os = DefaultNativePlatform.getCurrentOperatingSystem()
+val luauLspArchive = if (os.isWindows) {
+    "luau-lsp-win64.zip"
+} else if (os.isLinux) {
+    val architecture = DefaultNativePlatform.getCurrentArchitecture();
+    if (architecture.isArm) {
+        "luau-lsp-linux-arm64.zip"
+    } else {
+        "luau-lsp-linux.zip"
+    }
+} else {
+    "luau-lsp-macos.zip"
+}
+val luauLspArchiveDest = "build/tmp/downloadLuauLsp/${luauLspArchive}"
 
 // Configure project's dependencies
 repositories {
@@ -70,6 +91,23 @@ koverReport {
 tasks.getByName("compileKotlin").dependsOn("generateGrammarSource")
 
 tasks {
+    task("downloadLuauLsp", type = Download::class) {
+        src(arrayOf(
+            "${luauLspProjectUrl}/releases/download/${luauLspVersion}/${luauLspArchive}",
+        ))
+        dest(luauLspArchiveDest)
+        overwrite(false)
+    }
+
+
+    task("installLuauLsp", type = Copy::class) {
+        dependsOn("downloadLuauLsp")
+        from(zipTree(luauLspArchiveDest)) {
+            into("server")
+        }
+        destinationDir = file("src/main/resources")
+    }
+
     wrapper {
         gradleVersion = properties("gradleVersion").get()
     }
@@ -133,5 +171,22 @@ tasks {
 
     generateGrammarSource {
         arguments.plusAssign(listOf("-package", "com.github.lordfirespeed.jetbrainsluau.lang"))
+    }
+
+    processResources {
+        dependsOn("installLuauLsp")
+    }
+
+    patchPluginXml {
+        dependsOn("installLuauLsp")
+    }
+
+    prepareSandbox {
+        doLast {
+            copy {
+                from("${project.projectDir}/src/main/resources/server")
+                into("${destinationDir.path}/${pluginName.get()}/server")
+            }
+        }
     }
 }
