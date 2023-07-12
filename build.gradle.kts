@@ -67,7 +67,7 @@ koverReport {
     }
 }
 
-tasks.getByName("compileKotlin").dependsOn("generateGrammarSource");
+tasks.getByName("compileKotlin").dependsOn("generateGrammarSource")
 
 tasks {
     wrapper {
