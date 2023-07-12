@@ -173,6 +173,14 @@ tasks {
         arguments.plusAssign(listOf("-package", "com.github.lordfirespeed.jetbrainsluau.lang"))
     }
 
+    compileKotlin {
+        dependsOn(generateGrammarSource)
+    }
+
+    compileTestKotlin {
+        dependsOn(generateTestGrammarSource)
+    }
+
     processResources {
         dependsOn("installLuauLsp")
     }
