@@ -37,6 +37,7 @@ This grammar file derives from:
     Lua 5.4 grammar written by Kazunori Sakamoto and Alexander Alexeev
     https://github.com/antlr/grammars-v4/blob/master/lua/Lua.g4
 
+This grammar has not been tested.
 */
 grammar Luau;
 
