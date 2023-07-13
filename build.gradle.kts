@@ -170,7 +170,7 @@ tasks {
     }
 
     generateGrammarSource {
-        arguments.plusAssign(listOf("-package", "com.github.lordfirespeed.jetbrainsluau.lang"))
+        arguments.plusAssign(listOf("-package", "com.github.lordfirespeed.jetbrainsluau.gen.lang"))
     }
 
     compileKotlin {
