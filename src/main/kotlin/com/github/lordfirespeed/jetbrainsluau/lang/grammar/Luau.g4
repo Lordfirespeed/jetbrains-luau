@@ -31,26 +31,27 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 This grammar file derives from:
 
-    Luau 0.537 Grammar Documentation
+    Luau 0.583 Grammar Documentation
     https://github.com/Roblox/luau/blob/0.583/docs/_pages/grammar.md
 
     Lua 5.4 grammar written by Kazunori Sakamoto and Alexander Alexeev
     https://github.com/antlr/grammars-v4/blob/master/lua/Lua.g4
 
 This grammar has not been tested.
+The author is not confident it is correct.
 */
 grammar Luau;
 
 chunk
-    :   block
+    :   block EOF
     ;
 
 block
-    :  (stat (';')?)* (lastStat (';')?)? # CodeBlock
+    :  (stat (';')?)* (lastStat (';')?)?
     ;
 
 stat
-    :   varList '=' expList # MultipleAssignment
+    :   varList '=' expList # Assignment
     |   var compoundOp exp # CompoundAssignment
     |   funcCall # FunctionCall
     |   'do' block 'end' # DoBlock
@@ -59,9 +60,9 @@ stat
     |   'if' exp 'then' block ('elseif' exp 'then' block)* ('else' block)? 'end' # IfElseBlock
     |   'for' binding '=' exp ',' exp (',' exp)? 'do' block 'end' # ForRangeBlock
     |   'for' bindingList 'in' expList 'do' block 'end' # ForValuesBlock
-    |   'function' funcName funcBody # FunctionBlock
-    |   'local' 'function' NAME funcBody # LocalFunctionBlock
-    |   'local' bindingList ('=' expList)? # LocalMultipleAssignment
+    |   'function' funcName funcBody # FunctionDeclaration
+    |   'local' 'function' NAME funcBody # LocalFunctionDeclaration
+    |   'local' bindingList ('=' expList)? # LocalAssignment
     |   ('export')? 'type' NAME ('<' genericTypeListWithDefaults '>')? '=' type # ExportTypeDeclaration
     ;
 
@@ -173,7 +174,7 @@ funcArgs
 
 
 tableConstructor
-    :   '{' (fieldList)* '}'
+    :   '{' (fieldList)? '}'
     ;
 
 fieldList
@@ -318,21 +319,24 @@ NUMBER
     | BINARY
     ;
 
+fragment
 INTERP_BEGIN
     :   '`' InterpContent* '{'
     ;
 
+fragment
 INTERP_MID
     :   '}' InterpContent* '{'
     ;
 
+fragment
 INTERP_END
     :   '}' InterpContent* '`'
     ;
 
 fragment
 InterpContent
-    :   ( EscapeSequence | ~('\\'|'`') )
+    :   ( EscapeSequence | ~('\\'|'`'|'{'))
     ;
 
 STRING
@@ -396,7 +400,7 @@ NESTED_STR
 
 fragment
 EscapeSequence
-    :   '\\' [abfnrtvz"'|$#\\]
+    :   '\\' [abfnrtvz"'`{}|$#\\]
     |   '\\' '\r'? '\n'
     |   HexEscape
     |   UnicodeEscape

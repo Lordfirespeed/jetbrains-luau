@@ -15,6 +15,10 @@
                   extensions="luau"
                   fieldName="INSTANCE"/>
 
+        <lang.parserDefinition
+                language="Luau"
+                implementationClass="com.github.lordfirespeed.jetbrainsluau.lang.parser.LuauParserDefinition"/>
+
         <!-- LSP -->
         <platform.lsp.serverSupportProvider implementation="com.github.lordfirespeed.jetbrainsluau.ide.lsp.LuauLspServerSupportProvider"/>
 
@@ -24,8 +28,4 @@
                            bundle="messages.LuauBundle"
                            key="notification.group.luau"/>
     </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.lordfirespeed.jetbrainsluau.ide.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
 </idea-plugin>
