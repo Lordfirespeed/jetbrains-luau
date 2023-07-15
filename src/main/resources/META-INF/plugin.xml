@@ -19,6 +19,11 @@
                 language="Luau"
                 implementationClass="com.github.lordfirespeed.jetbrainsluau.lang.parser.LuauParserDefinition"/>
 
+        <!-- Syntax highlighting -->
+        <lang.syntaxHighlighterFactory
+                language="Luau"
+                implementationClass="com.github.lordfirespeed.jetbrainsluau.ide.highlight.LuauSyntaxHighlighterFactory"/>
+
         <!-- LSP -->
         <platform.lsp.serverSupportProvider implementation="com.github.lordfirespeed.jetbrainsluau.ide.lsp.LuauLspServerSupportProvider"/>
 

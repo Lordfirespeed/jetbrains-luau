@@ -54,6 +54,7 @@ This grammar has not been tested.
   tokenTypeClass="com.github.lordfirespeed.jetbrainsluau.lang.psi.LuauTokenType"
 
   tokens=[
+    DOC_COMMENT="regexp:---[^\r\n\u0085\u2028\u2029]"
     COMMENT="regexp:--\[(=*)\[(.|\n)*?\]\1\]"
     LINE_COMMENT="regexp:--[^\r\n\u0085\u2028\u2029]*"
     SHEBANG="regexp:#\![^\r\n\u0085\u2028\u2029]*"
@@ -70,10 +71,11 @@ This grammar has not been tested.
     // Grave string content: ([^`\\{\n]|(\\z?\n))
     // Long string content: .
 
-    NORMAL_STRING='regexp:"(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^"\\\n])*"'
-    CHAR_STRING="regexp:'(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^'\\\n])*'"
-    GRAVE_STRING="regexp:`(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|([^`\\{\n]))*`"
-    LONG_STRING="regexp:\[(=*)\[(.|\n)*?\]\1\]"
+    HEX_ESCAPE
+    UNICODE_ESCAPE
+    DECIMAL_ESCAPE
+    NEWLINE_ESCAPE
+    CHAR_ESCAPE
 
     WHITE_SPACE="regexp:[ \t\u000C\r\n]+"
 
@@ -125,6 +127,8 @@ This grammar has not been tested.
     DOT="."
     CONCAT=".."
     ELLIPSIS="..."
+    QUOTE="'"
+    DOUBLEQUOTE="\""
 
     PLUSEQ="+="
     MINUSEQ="-="
@@ -134,9 +138,14 @@ This grammar has not been tested.
     EXPONENTEQ="^="
     CONCATEQ="..="
 
-    INTERP_BEGIN="regexp:`(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^`\\{\n])*\{"
-    INTERP_MID="regexp:\}(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^`\\{\n])*\{"
-    INTERP_END="regexp:\}(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^`\\{\n])*`"
+    NORMAL_STRING_TEXT
+    CHAR_STRING_TEXT
+    LONG_STRING_TEXT
+    INTERP_STRING_TEXT="regexp:(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^`\\{\n])*"
+    INTERP_STRING_FRAGMENT_START
+    INTERP_STRING_FRAGMENT_END
+    INTERP_STRING_START
+    INTERP_STRING_END
 
     // Int, Float and Exponential numbers: [0-9](_|[0-9])*(\.[0-9](_|[0-9])*)?([Ee]-?[0-9](_|[0-9])*)?
     // Hex numbers: 0[xX][0-9a-fA-F][0-9a-fA-F_]*
@@ -214,7 +223,6 @@ private VarOrExp ::= Var | '(' Exp ')';
 Exp ::= (CastExp ( BinaryOp Exp )*) | (UnaryOp Exp ( BinaryOp Exp )*)
 IfElseExp ::= 'if' Exp 'then' Exp ('elseif' Exp 'then' Exp)* 'else' Exp
 private CastExp ::= SimpleExp ('::' Type)?
-StringInterp ::= INTERP_BEGIN Exp ( INTERP_MID Exp )* INTERP_END
 SimpleExp ::= NumberLiteral | StringLiteral | 'nil' | 'true' | 'false' | '...' | TableConstructor | AnonymousFunction | PrefixExp | IfElseExp | StringInterp
 FunctionArgs ::=  ('(' ExpList? ')') | TableConstructor | StringLiteral
 AnonymousFunction ::= 'function' FunctionBody
@@ -227,6 +235,19 @@ FieldSep ::= ',' | ';'
 CompoundOp ::= '+=' | '-=' | '*=' | '/=' | '%=' | '^=' | '..='
 BinaryOp ::= '+' | '-' | '*' | '/' | '^' | '%' | '..' | '<' | '<=' | '>' | '>=' | '==' | '~=' | 'and' | 'or'
 UnaryOp ::= '-' | 'not' | '#'
+
+StringInterp ::= InterpBegin InterpFragment ( InterpContent* InterpFragment )* InterpEnd
+GraveString ::= INTERP_STRING_START InterpContent* INTERP_STRING_END
+InterpFragment ::= INTERP_STRING_FRAGMENT_START Exp INTERP_STRING_FRAGMENT_END
+private InterpBegin ::= INTERP_STRING_START InterpContent*
+private InterpEnd ::= InterpContent* INTERP_STRING_END
+private InterpContent ::= StringEscape | INTERP_STRING_TEXT
+
+StringEscape ::= HEX_ESCAPE | UNICODE_ESCAPE | DECIMAL_ESCAPE | NEWLINE_ESCAPE | CHAR_ESCAPE
+NormalString ::= DOUBLEQUOTE (StringEscape | NORMAL_STRING_TEXT)* DOUBLEQUOTE
+CharString ::= QUOTE (StringEscape | CHAR_STRING_TEXT)* QUOTE
+StringLiteral ::= NormalString | CharString | GraveString | LONG_STRING
+NumberLiteral ::= NUMBER | HEX_NUMBER | BINARY_NUMBER
 
 SimpleType ::=
     'nil' |
@@ -265,6 +286,3 @@ TablePropOrIndexer ::= TableProp | TableIndexer
 PropList ::= TablePropOrIndexer (FieldSep TablePropOrIndexer)* (FieldSep)?
 TableType ::= '{' (PropList)? '}'
 FunctionType ::= ('<' GenericTypeList '>')? '(' (TypeList)? ')' '->' ReturnType
-
-NumberLiteral ::= NUMBER | HEX_NUMBER | BINARY_NUMBER
-StringLiteral ::= NORMAL_STRING | CHAR_STRING | GRAVE_STRING | LONG_STRING

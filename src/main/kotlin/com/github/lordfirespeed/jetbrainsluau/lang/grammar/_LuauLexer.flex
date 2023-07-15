@@ -13,6 +13,9 @@ import static com.github.lordfirespeed.jetbrainsluau.lang.psi.LuauTypeHolder.*;
     this((java.io.Reader)null);
   }
 %}
+%{}
+  private int zzStringInterpBracesDepth = 0;
+%}
 
 %public
 %class _LuauLexer
@@ -22,33 +25,72 @@ import static com.github.lordfirespeed.jetbrainsluau.lang.psi.LuauTypeHolder.*;
 %unicode
 
 EOL=\R
-WHITE_SPACE=\s+
+WHITE_SPACE=[ \t\u000C\r\n]+
 
 COMMENT=--\[(=*)\[(.|\n)*?\]\1\]
+DOC_COMMENT=---[^\r\n\u0085\u2028\u2029]*
 LINE_COMMENT=--[^\r\n\u0085\u2028\u2029]*
 SHEBANG=#\![^\r\n\u0085\u2028\u2029]*
-NORMAL_STRING=\"(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^\"\\\n])*\"
-CHAR_STRING='(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^'\\\n])*'
-GRAVE_STRING=`(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|([^`\\{\n]))*`
+
+HEX_ESCAPE=\\x[0-9a-fA-F]{2}
+UNICODE_ESCAPE=\\u\{[0-9a-fA-F]+\}
+DECIMAL_ESCAPE=\\[0-9]{1,3}
+NEWLINE_ESCAPE=\\z?\n
+SINGLE_CHAR_ESCAPE=\\.
+
+NORMAL_STRING_CONTENT=[^\"\\\n]*
+CHAR_STRING_CONTENT=[^'\\\n]*
+INTERP_STRING_CONTENT=[^`\\{\n]*
 LONG_STRING=\[(=*)\[(.|\n)*?\]\1\]
-WHITE_SPACE=[ \t\u000C\r\n]+
-INTERP_BEGIN=`(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^`\\{\n])*\{
-INTERP_MID=\}(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^`\\{\n])*\{
-INTERP_END=\}(\\((x[0-9a-fA-F]{2})|(u\{[0-9a-fA-F]+\})|([0-9]{1,3}|z?\n|.))|[^`\\{\n])*`
+
 NUMBER=[0-9](_|[0-9])*(\.[0-9](_|[0-9])*)?([Ee]-?[0-9](_|[0-9])*)?
 HEX_NUMBER=0[xX][0-9a-fA-F][0-9a-fA-F_]*
 BINARY_NUMBER=0[bB][01][01_]*
 IDENTIFIER=[a-zA-Z_][a-zA-Z_0-9]*
 
-%state INTERP
+%state YYINTERP, YYDOCCOMMENT, YYINTERP_STRING, YYNORMAL_STRING, YYCHAR_STRING
 %%
 
-<INTERP> {
-  {INTERP_MID}         { return INTERP_MID; }
-  {INTERP_END}         { yybegin(YYINITIAL); return INTERP_END; }
+<YYINTERP_STRING, YYNORMAL_STRING, YYCHAR_STRING> {
+  {HEX_ESCAPE}         { return HEX_ESCAPE; }
+  {UNICODE_ESCAPE}     { return UNICODE_ESCAPE; }
+  {DECIMAL_ESCAPE}     { return DECIMAL_ESCAPE; }
+  {NEWLINE_ESCAPE}     { return NEWLINE_ESCAPE; }
+  {SINGLE_CHAR_ESCAPE} { return CHAR_ESCAPE; }
 }
 
-<YYINITIAL, INTERP> {
+<YYNORMAL_STRING> {
+  {NORMAL_STRING_CONTENT} { return NORMAL_STRING_TEXT; }
+  "\""                    { yybegin(YYINITIAL); return DOUBLEQUOTE; }
+}
+
+<YYCHAR_STRING> {
+  {CHAR_STRING_CONTENT}   { return CHAR_STRING_TEXT; }
+  "'"                     { yybegin(YYINITIAL); return QUOTE; }
+}
+
+<YYINTERP_STRING> {
+  {INTERP_STRING_CONTENT} { return INTERP_STRING_TEXT; }
+  "{"                     { zzStringInterpBracesDepth = 1; yybegin(YYINTERP); return INTERP_STRING_FRAGMENT_START; }
+  "`"                     { yybegin(YYINITIAL); return INTERP_STRING_END; }
+}
+
+<YYDOCCOMMENT> {
+  {WHITE_SPACE}        { return TokenType.WHITE_SPACE; }
+  {COMMENT}            { return DOC_COMMENT; }
+  {LINE_COMMENT}       { return DOC_COMMENT; }
+  [^]                  { yypushback(1); yybegin(YYINITIAL); }
+}
+
+<YYINTERP> {
+  "{"                  { zzStringInterpBracesDepth++; return LBRACE; }
+  "}"                  { if (--zzStringInterpBracesDepth == 0) {
+                           yybegin(YYINTERP_STRING); return INTERP_STRING_FRAGMENT_END;
+                         }
+                         return RBRACE; }
+}
+
+<YYINITIAL, YYINTERP> {
   {WHITE_SPACE}        { return TokenType.WHITE_SPACE; }
 
   "and"                { return AND; }
@@ -106,15 +148,14 @@ IDENTIFIER=[a-zA-Z_][a-zA-Z_0-9]*
   "^="                 { return EXPONENTEQ; }
   "..="                { return CONCATEQ; }
 
+  {DOC_COMMENT}        { yybegin(YYDOCCOMMENT); return DOC_COMMENT; }
   {COMMENT}            { return COMMENT; }
   {LINE_COMMENT}       { return LINE_COMMENT; }
   {SHEBANG}            { return SHEBANG; }
-  {NORMAL_STRING}      { return NORMAL_STRING; }
-  {CHAR_STRING}        { return CHAR_STRING; }
-  {GRAVE_STRING}       { return GRAVE_STRING; }
   {LONG_STRING}        { return LONG_STRING; }
-  {WHITE_SPACE}        { return TokenType.WHITE_SPACE; }
-  {INTERP_BEGIN}       { yybegin(INTERP); return INTERP_BEGIN; }
+  "\""                 { yybegin(YYNORMAL_STRING); return DOUBLEQUOTE; }
+  "'"                  { yybegin(YYCHAR_STRING); return QUOTE; }
+  "`"                  { yybegin(YYINTERP_STRING); return INTERP_STRING_START; }
   {NUMBER}             { return NUMBER; }
   {HEX_NUMBER}         { return HEX_NUMBER; }
   {BINARY_NUMBER}      { return BINARY_NUMBER; }
