@@ -11,6 +11,7 @@ class LuauLspServerDescriptor(project: Project) : ProjectWideLspServerDescriptor
         return file.fileType is LuauFileType
     }
 
+    // consider overriding OSProcessHandler#readerOptions with 'BaseOutputReader.Options.forMostlySilentProcess()' to reduce CPU usage.
     override fun createCommandLine(): GeneralCommandLine {
         return GeneralCommandLine().apply {
             withCharset(Charsets.UTF_8)
