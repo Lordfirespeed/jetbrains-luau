@@ -11,14 +11,14 @@ import static com.github.lordfirespeed.jetbrainsluau.lang.psi.LuauTypeHolder.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.lordfirespeed.jetbrainsluau.lang.psi.*;
 
-public class LuauStringInterpImpl extends ASTWrapperPsiElement implements LuauStringInterp {
+public class LuauNormalStringImpl extends ASTWrapperPsiElement implements LuauNormalString {
 
-  public LuauStringInterpImpl(@NotNull ASTNode node) {
+  public LuauNormalStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull LuauVisitor visitor) {
-    visitor.visitStringInterp(this);
+    visitor.visitNormalString(this);
   }
 
   @Override
@@ -29,26 +29,8 @@ public class LuauStringInterpImpl extends ASTWrapperPsiElement implements LuauSt
 
   @Override
   @NotNull
-  public List<LuauInterpFragment> getInterpFragmentList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, LuauInterpFragment.class);
-  }
-
-  @Override
-  @NotNull
   public List<LuauStringEscape> getStringEscapeList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, LuauStringEscape.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getInterpStringEnd() {
-    return findNotNullChildByType(INTERP_STRING_END);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getInterpStringStart() {
-    return findNotNullChildByType(INTERP_STRING_START);
   }
 
 }

@@ -27,6 +27,10 @@ public class LuauVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitCharString(@NotNull LuauCharString o) {
+    visitPsiElement(o);
+  }
+
   public void visitCompoundAssignment(@NotNull LuauCompoundAssignment o) {
     visitPsiElement(o);
   }
@@ -119,6 +123,10 @@ public class LuauVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGraveString(@NotNull LuauGraveString o) {
+    visitPsiElement(o);
+  }
+
   public void visitIfBlock(@NotNull LuauIfBlock o) {
     visitPsiElement(o);
   }
@@ -128,6 +136,10 @@ public class LuauVisitor extends PsiElementVisitor {
   }
 
   public void visitIfElseExp(@NotNull LuauIfElseExp o) {
+    visitPsiElement(o);
+  }
+
+  public void visitInterpFragment(@NotNull LuauInterpFragment o) {
     visitPsiElement(o);
   }
 
@@ -148,6 +160,10 @@ public class LuauVisitor extends PsiElementVisitor {
   }
 
   public void visitNameList(@NotNull LuauNameList o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNormalString(@NotNull LuauNormalString o) {
     visitPsiElement(o);
   }
 
@@ -184,6 +200,10 @@ public class LuauVisitor extends PsiElementVisitor {
   }
 
   public void visitSingletonType(@NotNull LuauSingletonType o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringEscape(@NotNull LuauStringEscape o) {
     visitPsiElement(o);
   }
 

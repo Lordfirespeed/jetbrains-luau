@@ -5,18 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface LuauStringInterp extends PsiElement {
+public interface LuauInterpFragment extends PsiElement {
 
   @NotNull
-  List<LuauInterpFragment> getInterpFragmentList();
+  LuauExp getExp();
 
   @NotNull
-  List<LuauStringEscape> getStringEscapeList();
+  PsiElement getInterpStringFragmentEnd();
 
   @NotNull
-  PsiElement getInterpStringEnd();
-
-  @NotNull
-  PsiElement getInterpStringStart();
+  PsiElement getInterpStringFragmentStart();
 
 }

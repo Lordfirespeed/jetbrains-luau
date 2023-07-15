@@ -29,26 +29,20 @@ public class LuauStringLiteralImpl extends ASTWrapperPsiElement implements LuauS
 
   @Override
   @Nullable
-  public PsiElement getCharString() {
-    return findChildByType(CHAR_STRING);
+  public LuauCharString getCharString() {
+    return findChildByClass(LuauCharString.class);
   }
 
   @Override
   @Nullable
-  public PsiElement getGraveString() {
-    return findChildByType(GRAVE_STRING);
+  public LuauGraveString getGraveString() {
+    return findChildByClass(LuauGraveString.class);
   }
 
   @Override
   @Nullable
-  public PsiElement getLongString() {
-    return findChildByType(LONG_STRING);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNormalString() {
-    return findChildByType(NORMAL_STRING);
+  public LuauNormalString getNormalString() {
+    return findChildByClass(LuauNormalString.class);
   }
 
 }

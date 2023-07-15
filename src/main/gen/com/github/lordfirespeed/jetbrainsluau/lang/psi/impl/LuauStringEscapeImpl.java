@@ -11,14 +11,14 @@ import static com.github.lordfirespeed.jetbrainsluau.lang.psi.LuauTypeHolder.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.lordfirespeed.jetbrainsluau.lang.psi.*;
 
-public class LuauStringInterpImpl extends ASTWrapperPsiElement implements LuauStringInterp {
+public class LuauStringEscapeImpl extends ASTWrapperPsiElement implements LuauStringEscape {
 
-  public LuauStringInterpImpl(@NotNull ASTNode node) {
+  public LuauStringEscapeImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull LuauVisitor visitor) {
-    visitor.visitStringInterp(this);
+    visitor.visitStringEscape(this);
   }
 
   @Override
@@ -28,27 +28,33 @@ public class LuauStringInterpImpl extends ASTWrapperPsiElement implements LuauSt
   }
 
   @Override
-  @NotNull
-  public List<LuauInterpFragment> getInterpFragmentList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, LuauInterpFragment.class);
+  @Nullable
+  public PsiElement getCharEscape() {
+    return findChildByType(CHAR_ESCAPE);
   }
 
   @Override
-  @NotNull
-  public List<LuauStringEscape> getStringEscapeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, LuauStringEscape.class);
+  @Nullable
+  public PsiElement getDecimalEscape() {
+    return findChildByType(DECIMAL_ESCAPE);
   }
 
   @Override
-  @NotNull
-  public PsiElement getInterpStringEnd() {
-    return findNotNullChildByType(INTERP_STRING_END);
+  @Nullable
+  public PsiElement getHexEscape() {
+    return findChildByType(HEX_ESCAPE);
   }
 
   @Override
-  @NotNull
-  public PsiElement getInterpStringStart() {
-    return findNotNullChildByType(INTERP_STRING_START);
+  @Nullable
+  public PsiElement getNewlineEscape() {
+    return findChildByType(NEWLINE_ESCAPE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getUnicodeEscape() {
+    return findChildByType(UNICODE_ESCAPE);
   }
 
 }

@@ -14,6 +14,7 @@ public interface LuauTypeHolder {
   IElementType BINDING = new LuauElementType("BINDING");
   IElementType BINDING_LIST = new LuauElementType("BINDING_LIST");
   IElementType BLOCK = new LuauElementType("BLOCK");
+  IElementType CHAR_STRING = new LuauElementType("CHAR_STRING");
   IElementType COMPOUND_ASSIGNMENT = new LuauElementType("COMPOUND_ASSIGNMENT");
   IElementType COMPOUND_OP = new LuauElementType("COMPOUND_OP");
   IElementType DO_BLOCK = new LuauElementType("DO_BLOCK");
@@ -37,14 +38,17 @@ public interface LuauTypeHolder {
   IElementType GENERIC_TYPE_PACK = new LuauElementType("GENERIC_TYPE_PACK");
   IElementType GENERIC_TYPE_PACK_PARAMETER = new LuauElementType("GENERIC_TYPE_PACK_PARAMETER");
   IElementType GENERIC_TYPE_PACK_PARAMETER_WITH_DEFAULT = new LuauElementType("GENERIC_TYPE_PACK_PARAMETER_WITH_DEFAULT");
+  IElementType GRAVE_STRING = new LuauElementType("GRAVE_STRING");
   IElementType IF_BLOCK = new LuauElementType("IF_BLOCK");
   IElementType IF_ELSE_CHAIN = new LuauElementType("IF_ELSE_CHAIN");
   IElementType IF_ELSE_EXP = new LuauElementType("IF_ELSE_EXP");
+  IElementType INTERP_FRAGMENT = new LuauElementType("INTERP_FRAGMENT");
   IElementType INTERSECTION_SUFFIX = new LuauElementType("INTERSECTION_SUFFIX");
   IElementType LAST_STAT = new LuauElementType("LAST_STAT");
   IElementType LOCAL_ASSIGNMENT = new LuauElementType("LOCAL_ASSIGNMENT");
   IElementType LOCAL_FUNCTION_DECLARATION = new LuauElementType("LOCAL_FUNCTION_DECLARATION");
   IElementType NAME_LIST = new LuauElementType("NAME_LIST");
+  IElementType NORMAL_STRING = new LuauElementType("NORMAL_STRING");
   IElementType NUMBER_LITERAL = new LuauElementType("NUMBER_LITERAL");
   IElementType PARAM_LIST = new LuauElementType("PARAM_LIST");
   IElementType PREFIX_EXP = new LuauElementType("PREFIX_EXP");
@@ -55,6 +59,7 @@ public interface LuauTypeHolder {
   IElementType SIMPLE_TYPE = new LuauElementType("SIMPLE_TYPE");
   IElementType SINGLETON_TYPE = new LuauElementType("SINGLETON_TYPE");
   IElementType STAT = new LuauElementType("STAT");
+  IElementType STRING_ESCAPE = new LuauElementType("STRING_ESCAPE");
   IElementType STRING_INTERP = new LuauElementType("STRING_INTERP");
   IElementType STRING_LITERAL = new LuauElementType("STRING_LITERAL");
   IElementType TABLE_CONSTRUCTOR = new LuauElementType("TABLE_CONSTRUCTOR");
@@ -77,16 +82,20 @@ public interface LuauTypeHolder {
   IElementType AND = new LuauTokenType("and");
   IElementType BINARY_NUMBER = new LuauTokenType("BINARY_NUMBER");
   IElementType BREAK = new LuauTokenType("break");
-  IElementType CHAR_STRING = new LuauTokenType("CHAR_STRING");
+  IElementType CHAR_ESCAPE = new LuauTokenType("CHAR_ESCAPE");
+  IElementType CHAR_STRING_TEXT = new LuauTokenType("CHAR_STRING_TEXT");
   IElementType COLON = new LuauTokenType(":");
   IElementType COMMA = new LuauTokenType(",");
   IElementType COMMENT = new LuauTokenType("COMMENT");
   IElementType CONCAT = new LuauTokenType("..");
   IElementType CONCATEQ = new LuauTokenType("..=");
+  IElementType DECIMAL_ESCAPE = new LuauTokenType("DECIMAL_ESCAPE");
   IElementType DIV = new LuauTokenType("/");
   IElementType DIVEQ = new LuauTokenType("/=");
   IElementType DO = new LuauTokenType("do");
+  IElementType DOC_COMMENT = new LuauTokenType("DOC_COMMENT");
   IElementType DOT = new LuauTokenType(".");
+  IElementType DOUBLEQUOTE = new LuauTokenType("\"");
   IElementType ELLIPSIS = new LuauTokenType("...");
   IElementType ELSE = new LuauTokenType("else");
   IElementType ELSEIF = new LuauTokenType("elseif");
@@ -99,16 +108,18 @@ public interface LuauTypeHolder {
   IElementType FOR = new LuauTokenType("for");
   IElementType FUNCTION = new LuauTokenType("function");
   IElementType GE = new LuauTokenType(">=");
-  IElementType GRAVE_STRING = new LuauTokenType("GRAVE_STRING");
   IElementType GT = new LuauTokenType(">");
   IElementType HASH = new LuauTokenType("#");
+  IElementType HEX_ESCAPE = new LuauTokenType("HEX_ESCAPE");
   IElementType HEX_NUMBER = new LuauTokenType("HEX_NUMBER");
   IElementType IDENTIFIER = new LuauTokenType("IDENTIFIER");
   IElementType IF = new LuauTokenType("if");
   IElementType IN = new LuauTokenType("in");
-  IElementType INTERP_BEGIN = new LuauTokenType("INTERP_BEGIN");
-  IElementType INTERP_END = new LuauTokenType("INTERP_END");
-  IElementType INTERP_MID = new LuauTokenType("INTERP_MID");
+  IElementType INTERP_STRING_END = new LuauTokenType("INTERP_STRING_END");
+  IElementType INTERP_STRING_FRAGMENT_END = new LuauTokenType("INTERP_STRING_FRAGMENT_END");
+  IElementType INTERP_STRING_FRAGMENT_START = new LuauTokenType("INTERP_STRING_FRAGMENT_START");
+  IElementType INTERP_STRING_START = new LuauTokenType("INTERP_STRING_START");
+  IElementType INTERP_STRING_TEXT = new LuauTokenType("INTERP_STRING_TEXT");
   IElementType LBRACE = new LuauTokenType("{");
   IElementType LBRACK = new LuauTokenType("[");
   IElementType LE = new LuauTokenType("<=");
@@ -124,13 +135,15 @@ public interface LuauTypeHolder {
   IElementType MUL = new LuauTokenType("*");
   IElementType MULEQ = new LuauTokenType("*=");
   IElementType NEQ = new LuauTokenType("~=");
+  IElementType NEWLINE_ESCAPE = new LuauTokenType("NEWLINE_ESCAPE");
   IElementType NIL = new LuauTokenType("nil");
-  IElementType NORMAL_STRING = new LuauTokenType("NORMAL_STRING");
+  IElementType NORMAL_STRING_TEXT = new LuauTokenType("NORMAL_STRING_TEXT");
   IElementType NOT = new LuauTokenType("not");
   IElementType NUMBER = new LuauTokenType("NUMBER");
   IElementType OR = new LuauTokenType("or");
   IElementType PLUS = new LuauTokenType("+");
   IElementType PLUSEQ = new LuauTokenType("+=");
+  IElementType QUOTE = new LuauTokenType("'");
   IElementType RBRACE = new LuauTokenType("}");
   IElementType RBRACK = new LuauTokenType("]");
   IElementType REPEAT = new LuauTokenType("repeat");
@@ -140,6 +153,7 @@ public interface LuauTypeHolder {
   IElementType SHEBANG = new LuauTokenType("SHEBANG");
   IElementType THEN = new LuauTokenType("then");
   IElementType TRUE = new LuauTokenType("true");
+  IElementType UNICODE_ESCAPE = new LuauTokenType("UNICODE_ESCAPE");
   IElementType UNTIL = new LuauTokenType("until");
   IElementType WHILE = new LuauTokenType("while");
 
@@ -163,6 +177,9 @@ public interface LuauTypeHolder {
       }
       else if (type == BLOCK) {
         return new LuauBlockImpl(node);
+      }
+      else if (type == CHAR_STRING) {
+        return new LuauCharStringImpl(node);
       }
       else if (type == COMPOUND_ASSIGNMENT) {
         return new LuauCompoundAssignmentImpl(node);
@@ -233,6 +250,9 @@ public interface LuauTypeHolder {
       else if (type == GENERIC_TYPE_PACK_PARAMETER_WITH_DEFAULT) {
         return new LuauGenericTypePackParameterWithDefaultImpl(node);
       }
+      else if (type == GRAVE_STRING) {
+        return new LuauGraveStringImpl(node);
+      }
       else if (type == IF_BLOCK) {
         return new LuauIfBlockImpl(node);
       }
@@ -241,6 +261,9 @@ public interface LuauTypeHolder {
       }
       else if (type == IF_ELSE_EXP) {
         return new LuauIfElseExpImpl(node);
+      }
+      else if (type == INTERP_FRAGMENT) {
+        return new LuauInterpFragmentImpl(node);
       }
       else if (type == INTERSECTION_SUFFIX) {
         return new LuauIntersectionSuffixImpl(node);
@@ -256,6 +279,9 @@ public interface LuauTypeHolder {
       }
       else if (type == NAME_LIST) {
         return new LuauNameListImpl(node);
+      }
+      else if (type == NORMAL_STRING) {
+        return new LuauNormalStringImpl(node);
       }
       else if (type == NUMBER_LITERAL) {
         return new LuauNumberLiteralImpl(node);
@@ -286,6 +312,9 @@ public interface LuauTypeHolder {
       }
       else if (type == STAT) {
         return new LuauStatImpl(node);
+      }
+      else if (type == STRING_ESCAPE) {
+        return new LuauStringEscapeImpl(node);
       }
       else if (type == STRING_INTERP) {
         return new LuauStringInterpImpl(node);

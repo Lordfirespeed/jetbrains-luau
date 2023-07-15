@@ -11,26 +11,20 @@ import static com.github.lordfirespeed.jetbrainsluau.lang.psi.LuauTypeHolder.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.lordfirespeed.jetbrainsluau.lang.psi.*;
 
-public class LuauStringInterpImpl extends ASTWrapperPsiElement implements LuauStringInterp {
+public class LuauGraveStringImpl extends ASTWrapperPsiElement implements LuauGraveString {
 
-  public LuauStringInterpImpl(@NotNull ASTNode node) {
+  public LuauGraveStringImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull LuauVisitor visitor) {
-    visitor.visitStringInterp(this);
+    visitor.visitGraveString(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof LuauVisitor) accept((LuauVisitor)visitor);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public List<LuauInterpFragment> getInterpFragmentList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, LuauInterpFragment.class);
   }
 
   @Override

@@ -5,18 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface LuauStringInterp extends PsiElement {
-
-  @NotNull
-  List<LuauInterpFragment> getInterpFragmentList();
+public interface LuauNormalString extends PsiElement {
 
   @NotNull
   List<LuauStringEscape> getStringEscapeList();
-
-  @NotNull
-  PsiElement getInterpStringEnd();
-
-  @NotNull
-  PsiElement getInterpStringStart();
 
 }

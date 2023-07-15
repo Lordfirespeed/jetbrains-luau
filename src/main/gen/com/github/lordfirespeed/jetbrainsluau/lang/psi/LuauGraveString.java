@@ -5,10 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface LuauStringInterp extends PsiElement {
-
-  @NotNull
-  List<LuauInterpFragment> getInterpFragmentList();
+public interface LuauGraveString extends PsiElement {
 
   @NotNull
   List<LuauStringEscape> getStringEscapeList();

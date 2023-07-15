@@ -180,6 +180,40 @@ public class _LuauParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // QUOTE (StringEscape | CHAR_STRING_TEXT)* QUOTE
+  public static boolean CharString(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CharString")) return false;
+    if (!nextTokenIs(b, QUOTE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, QUOTE);
+    r = r && CharString_1(b, l + 1);
+    r = r && consumeToken(b, QUOTE);
+    exit_section_(b, m, CHAR_STRING, r);
+    return r;
+  }
+
+  // (StringEscape | CHAR_STRING_TEXT)*
+  private static boolean CharString_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CharString_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!CharString_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "CharString_1", c)) break;
+    }
+    return true;
+  }
+
+  // StringEscape | CHAR_STRING_TEXT
+  private static boolean CharString_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "CharString_1_0")) return false;
+    boolean r;
+    r = StringEscape(b, l + 1);
+    if (!r) r = consumeToken(b, CHAR_STRING_TEXT);
+    return r;
+  }
+
+  /* ********************************************************** */
   // Var CompoundOp Exp
   public static boolean CompoundAssignment(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "CompoundAssignment")) return false;
@@ -1094,6 +1128,31 @@ public class _LuauParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // INTERP_STRING_START InterpContent* INTERP_STRING_END
+  public static boolean GraveString(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "GraveString")) return false;
+    if (!nextTokenIs(b, INTERP_STRING_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, INTERP_STRING_START);
+    r = r && GraveString_1(b, l + 1);
+    r = r && consumeToken(b, INTERP_STRING_END);
+    exit_section_(b, m, GRAVE_STRING, r);
+    return r;
+  }
+
+  // InterpContent*
+  private static boolean GraveString_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "GraveString_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!InterpContent(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "GraveString_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
   // 'if' Exp 'then' block
   public static boolean IfBlock(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "IfBlock")) return false;
@@ -1180,6 +1239,77 @@ public class _LuauParser implements PsiParser, LightPsiParser {
     r = r && consumeToken(b, THEN);
     r = r && Exp(b, l + 1);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // INTERP_STRING_START InterpContent*
+  static boolean InterpBegin(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterpBegin")) return false;
+    if (!nextTokenIs(b, INTERP_STRING_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, INTERP_STRING_START);
+    r = r && InterpBegin_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // InterpContent*
+  private static boolean InterpBegin_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterpBegin_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!InterpContent(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "InterpBegin_1", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // StringEscape | INTERP_STRING_TEXT
+  static boolean InterpContent(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterpContent")) return false;
+    boolean r;
+    r = StringEscape(b, l + 1);
+    if (!r) r = consumeToken(b, INTERP_STRING_TEXT);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // InterpContent* INTERP_STRING_END
+  static boolean InterpEnd(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterpEnd")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = InterpEnd_0(b, l + 1);
+    r = r && consumeToken(b, INTERP_STRING_END);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // InterpContent*
+  private static boolean InterpEnd_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterpEnd_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!InterpContent(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "InterpEnd_0", c)) break;
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
+  // INTERP_STRING_FRAGMENT_START Exp INTERP_STRING_FRAGMENT_END
+  public static boolean InterpFragment(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "InterpFragment")) return false;
+    if (!nextTokenIs(b, INTERP_STRING_FRAGMENT_START)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, INTERP_STRING_FRAGMENT_START);
+    r = r && Exp(b, l + 1);
+    r = r && consumeToken(b, INTERP_STRING_FRAGMENT_END);
+    exit_section_(b, m, INTERP_FRAGMENT, r);
     return r;
   }
 
@@ -1315,6 +1445,40 @@ public class _LuauParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, COMMA, IDENTIFIER);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // DOUBLEQUOTE (StringEscape | NORMAL_STRING_TEXT)* DOUBLEQUOTE
+  public static boolean NormalString(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NormalString")) return false;
+    if (!nextTokenIs(b, DOUBLEQUOTE)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DOUBLEQUOTE);
+    r = r && NormalString_1(b, l + 1);
+    r = r && consumeToken(b, DOUBLEQUOTE);
+    exit_section_(b, m, NORMAL_STRING, r);
+    return r;
+  }
+
+  // (StringEscape | NORMAL_STRING_TEXT)*
+  private static boolean NormalString_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NormalString_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!NormalString_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "NormalString_1", c)) break;
+    }
+    return true;
+  }
+
+  // StringEscape | NORMAL_STRING_TEXT
+  private static boolean NormalString_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "NormalString_1_0")) return false;
+    boolean r;
+    r = StringEscape(b, l + 1);
+    if (!r) r = consumeToken(b, NORMAL_STRING_TEXT);
     return r;
   }
 
@@ -1617,21 +1781,36 @@ public class _LuauParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // INTERP_BEGIN Exp ( INTERP_MID Exp )* INTERP_END
+  // HEX_ESCAPE | UNICODE_ESCAPE | DECIMAL_ESCAPE | NEWLINE_ESCAPE | CHAR_ESCAPE
+  public static boolean StringEscape(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StringEscape")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, STRING_ESCAPE, "<string escape>");
+    r = consumeToken(b, HEX_ESCAPE);
+    if (!r) r = consumeToken(b, UNICODE_ESCAPE);
+    if (!r) r = consumeToken(b, DECIMAL_ESCAPE);
+    if (!r) r = consumeToken(b, NEWLINE_ESCAPE);
+    if (!r) r = consumeToken(b, CHAR_ESCAPE);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // InterpBegin InterpFragment ( InterpContent* InterpFragment )* InterpEnd
   public static boolean StringInterp(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StringInterp")) return false;
-    if (!nextTokenIs(b, INTERP_BEGIN)) return false;
+    if (!nextTokenIs(b, INTERP_STRING_START)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, INTERP_BEGIN);
-    r = r && Exp(b, l + 1);
+    r = InterpBegin(b, l + 1);
+    r = r && InterpFragment(b, l + 1);
     r = r && StringInterp_2(b, l + 1);
-    r = r && consumeToken(b, INTERP_END);
+    r = r && InterpEnd(b, l + 1);
     exit_section_(b, m, STRING_INTERP, r);
     return r;
   }
 
-  // ( INTERP_MID Exp )*
+  // ( InterpContent* InterpFragment )*
   private static boolean StringInterp_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StringInterp_2")) return false;
     while (true) {
@@ -1642,26 +1821,37 @@ public class _LuauParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // INTERP_MID Exp
+  // InterpContent* InterpFragment
   private static boolean StringInterp_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StringInterp_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, INTERP_MID);
-    r = r && Exp(b, l + 1);
+    r = StringInterp_2_0_0(b, l + 1);
+    r = r && InterpFragment(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
+  // InterpContent*
+  private static boolean StringInterp_2_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "StringInterp_2_0_0")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!InterpContent(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "StringInterp_2_0_0", c)) break;
+    }
+    return true;
+  }
+
   /* ********************************************************** */
-  // NORMAL_STRING | CHAR_STRING | GRAVE_STRING | LONG_STRING
+  // NormalString | CharString | GraveString | LONG_STRING
   public static boolean StringLiteral(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "StringLiteral")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, STRING_LITERAL, "<string literal>");
-    r = consumeToken(b, NORMAL_STRING);
-    if (!r) r = consumeToken(b, CHAR_STRING);
-    if (!r) r = consumeToken(b, GRAVE_STRING);
+    r = NormalString(b, l + 1);
+    if (!r) r = CharString(b, l + 1);
+    if (!r) r = GraveString(b, l + 1);
     if (!r) r = consumeToken(b, LONG_STRING);
     exit_section_(b, l, m, r, false, null);
     return r;

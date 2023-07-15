@@ -5,15 +5,21 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface LuauStringLiteral extends PsiElement {
+public interface LuauStringEscape extends PsiElement {
 
   @Nullable
-  LuauCharString getCharString();
+  PsiElement getCharEscape();
 
   @Nullable
-  LuauGraveString getGraveString();
+  PsiElement getDecimalEscape();
 
   @Nullable
-  LuauNormalString getNormalString();
+  PsiElement getHexEscape();
+
+  @Nullable
+  PsiElement getNewlineEscape();
+
+  @Nullable
+  PsiElement getUnicodeEscape();
 
 }
