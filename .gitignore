@@ -3,3 +3,5 @@
 .qodana
 build
 src/main/resources/server/
+jflex-*.jar
+idea-flex.skeleton
